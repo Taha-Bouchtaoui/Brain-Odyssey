@@ -1,0 +1,114 @@
+.register-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #1e1f3f, #302b63, #24243e);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animation de symboles math */
+.register-container::before {
+  content: "  +  −  ×  ÷  π  √  ∑ ";
+  position: absolute;
+  font-size: 80px;
+  opacity: 0.05;
+  animation: float 20s linear infinite;
+  white-space: nowrap;
+}
+
+@keyframes float {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.register-card {
+  width: 420px;
+  padding: 35px;
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 40px rgba(0, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+.register-title {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 24px;
+  letter-spacing: 1px;
+}
+
+.register-form input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  border: none;
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  transition: 0.3s;
+}
+
+.register-form input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.register-form input:focus {
+  background: rgba(0, 255, 255, 0.2);
+  box-shadow: 0 0 10px #00f7ff;
+}
+
+.child-card {
+  background: rgba(255, 255, 255, 0.07);
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.register-form button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.add-btn {
+  background: linear-gradient(45deg, #00f7ff, #00c6ff);
+  color: black;
+}
+
+.add-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #00f7ff;
+}
+
+.remove-btn {
+  background: #ff4d4d;
+  color: white;
+}
+
+.remove-btn:hover {
+  transform: scale(1.05);
+}
+
+.submit-btn {
+  background: linear-gradient(45deg, #ffcc00, #ff9900);
+  color: black;
+}
+
+.submit-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px #ffcc00;
+}

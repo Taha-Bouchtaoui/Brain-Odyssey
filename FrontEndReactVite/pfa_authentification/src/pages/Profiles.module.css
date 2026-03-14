@@ -1,0 +1,76 @@
+.profilesPage{
+    background: linear-gradient(135deg, #0f0c29, #1b1b3a, #000);
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    overflow:hidden;
+    position:relative;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.profilesPage::before{
+    content:"";
+    position:absolute;
+    width:200%;
+    height:200%;
+    background: radial-gradient(circle at 30% 30%, rgba(0,255,255,0.1), transparent 40%),
+                radial-gradient(circle at 70% 70%, rgba(255,0,255,0.1), transparent 40%);
+    animation: moveBg 10s infinite alternate ease-in-out;
+}
+
+@keyframes moveBg{
+    from{transform:translate(-5%, -5%);}
+    to{transform:translate(5%, 5%);}
+}
+
+.container{
+    text-align:center;
+    z-index:1;
+}
+
+.title{
+    margin-bottom:40px;
+    font-size:2.5rem;
+    letter-spacing:3px;
+    text-shadow:0 0 20px cyan;
+}
+
+.profiles{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
+    gap:40px;
+    max-width:800px;
+}
+
+.profileCard{
+    cursor:pointer;
+    transition: all 0.4s ease;
+    padding:20px;
+    border-radius:20px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    border:1px solid rgba(255,255,255,0.1);
+    position:relative;
+}
+
+.profileCard:hover{
+    transform: scale(1.1) translateY(-10px);
+    box-shadow: 0 0 30px cyan;
+}
+
+.profileCard img{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid cyan;
+    margin-bottom:15px;
+    transition:0.3s;
+}
+
+.profileName{
+    font-size:1rem;
+    letter-spacing:2px;
+}
