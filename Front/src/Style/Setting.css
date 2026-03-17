@@ -1,0 +1,197 @@
+/* ========================= */
+/* Settings Page Scoped CSS */
+/* ========================= */
+
+.settings-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+.settings-page .settings-box {
+  background: white;
+  padding: 35px;
+  border-radius: 20px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+  max-width: 600px;
+  width: 100%;
+}
+
+.settings-page .settings-box h4 {
+  margin-top: 20px;
+  text-align: center;
+  color: #7c3aed;
+}
+
+/* Profile Section */
+.settings-page .profile-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.settings-page .avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #7c3aed;
+}
+
+.settings-page .avatar-small {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #7c3aed;
+  flex-shrink: 0;
+}
+.settings-page .pin-section {
+  margin-top: 30px;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+}
+
+/* Inputs */
+.settings-page input,
+.settings-page select {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0 15px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+/* ── Shared button style ── */
+.settings-page .primary-btn,
+.settings-page .danger-btn {
+  width: 170px;
+  height: 45px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+  font-size: 15px;
+}
+
+.settings-page .primary-btn {
+  background: #7c3aed;
+  color: white;
+}
+
+.settings-page .primary-btn:hover {
+  background: #6d28d9;
+  transform: scale(1.05);
+}
+
+.settings-page .danger-btn {
+  background: #ff5252;
+  color: white;
+}
+
+.settings-page .danger-btn:hover {
+  background: #ff1744;
+  transform: scale(1.05);
+}
+
+/* Buttons row */
+.settings-page .account-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* ── Children Section ── */
+.settings-page .children-section {
+  margin-top: 30px;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+}
+
+.settings-page .child-card {
+  background: #f9f5ff;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid #e9d5ff;
+}
+
+/* View mode — avatar + name side by side */
+.settings-page .child-info {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 15px;
+}
+
+.settings-page .child-info .child-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.settings-page .child-info .child-details p {
+  margin: 0;
+}
+
+/* Edit mode */
+.settings-page .child-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* All child-buttons rows (edit + add form) */
+.settings-page .child-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+/* Add child form */
+.settings-page .add-child-form {
+  background: #f9f5ff;
+  border: 1px solid #e9d5ff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Slider */
+.settings-page .slider-box {
+  margin-top: 15px;
+}
+
+/* Settings Option */
+.settings-page .settings-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+/* Themes */
+body.purple {
+  background-color: #f3e8ff;
+}
+
+body.pastel {
+  background-color: #fff1f2;
+}
+
+body.dark {
+  background-color: #1e1e2f;
+  color: white;
+}

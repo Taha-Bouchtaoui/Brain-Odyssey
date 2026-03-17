@@ -1,0 +1,41 @@
+.quests-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 15px;
+}
+
+.quest-card {
+  background: #fff9c4;
+  padding: 15px 18px;
+  border-radius: 22px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: 0.3s ease;
+}
+
+.quest-card:hover {
+  transform: translateY(-4px) scale(1.02);
+}
+
+.progress-rectangle {
+  width: 95%;
+  height: 44px;
+  background: #ffffff;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+}
+
+.progress-rectangle.completed {
+  background: linear-gradient(90deg, #ffeb3b, #ff9800, #ffd600);
+}
+
+.quest-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}

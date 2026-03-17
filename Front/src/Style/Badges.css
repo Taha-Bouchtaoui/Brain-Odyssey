@@ -1,0 +1,31 @@
+.badges-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.badge-card {
+  background: white;
+  padding: 18px;
+  border-radius: 16px;
+  text-align: center;
+  width: 140px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: 0.3s ease;
+}
+
+.badge-card:hover {
+  transform: translateY(-5px) scale(1.05);
+}
+
+.badge-img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}
+
+.locked {
+  opacity: 0.5;
+}

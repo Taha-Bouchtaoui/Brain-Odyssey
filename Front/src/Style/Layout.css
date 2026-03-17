@@ -1,0 +1,234 @@
+/* ========================= */
+/* Layout Grid */
+/* ========================= */
+.grid-container {
+  display: grid;
+  grid-template-columns: 260px 1fr 1fr 1fr;
+  grid-template-rows: 0.2fr 3fr;
+  grid-template-areas:
+    'sidebar header header header'
+    'sidebar main main main';
+  height: 100vh;
+}
+
+/* ========================= */
+/* Header */
+/* ========================= */
+.header {
+  grid-area: header;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 25px;
+
+  background-color: #ffffff;
+  background-image: radial-gradient(circle, #fffacd 1px, transparent 1px);
+  background-size: 40px 40px;
+
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.menu-icon { display: none; }
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header .icon {
+  font-size: 22px;
+  color: #555;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.header .icon:hover {
+  color: #7c3aed;
+}
+
+/* ========================= */
+/* Header Profile */
+/* ========================= */
+.profile-dropdown-wrapper {
+  position: relative;
+}
+
+.profile-icon-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.header-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #7c3aed;
+}
+
+.header-username {
+  color: #333;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ========================= */
+/* Dropdown Menu */
+/* ========================= */
+.dropdown-menu {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  min-width: 210px;
+  z-index: 1000;
+  overflow: hidden;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: #f3e8ff;
+  font-weight: 600;
+  font-size: 15px;
+  color: #333;
+  position: relative;
+}
+
+.dropdown-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #7c3aed;
+}
+
+.dropdown-close {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #e9d5ff;
+  border: none;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #7c3aed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropdown-close:hover {
+  background: #7c3aed;
+  color: white;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  text-align: left;
+  transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+  background: #f3e8ff;
+  color: #7c3aed;
+}
+
+/* ========================= */
+/* Sidebar */
+/* ========================= */
+#sidebar {
+  grid-area: sidebar;
+  height: 100%;
+  background: #1a0043;
+  overflow-y: auto;
+  transition: all 0.4s ease;
+  color: #ffffff;
+  background-image: url('../assets/photo/citystars.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.sidebar-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  margin-bottom: 30px;
+}
+
+.sidebar-brand {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.sidebar-list {
+  padding: 0;
+  list-style-type: none;
+}
+
+.sidebar-list-item {
+  padding: 18px 20px;
+  font-size: 17px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.sidebar-list-item:hover {
+  background-color: rgba(183, 223, 255, 0.676);
+  cursor: pointer;
+}
+
+.sidebar-list-item a {
+  text-decoration: none;
+  color: #ffffff;
+  display: block;
+}
+
+/* ========================= */
+/* Responsive */
+/* ========================= */
+@media screen and (max-width: 992px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'header'
+      'main';
+  }
+
+  #sidebar { display: none; }
+  .menu-icon { display: inline; }
+}
