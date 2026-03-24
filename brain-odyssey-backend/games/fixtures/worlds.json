@@ -1,0 +1,138 @@
+[
+  {
+    "model": "games.world",
+    "pk": 1,
+    "fields": {
+      "name": "Cosmic Cube",
+      "description": "Explore l'espace !",
+      "alt": "Cosmic Cube World",
+      "default_status": "unlocked",
+      "required_level": 1,
+      "gems": 3,
+      "order": 1,
+      "color": "#6b5bff",
+      "secondary_color": "#9d7aff",
+      "background_gradient": "radial-gradient(ellipse at top, #0a0a3a, #03031a, #000008)",
+      "star_color": "#ffffff"
+    }
+  },
+  {
+    "model": "games.world",
+    "pk": 2,
+    "fields": {
+      "name": "Sparkle Kingdom",
+      "description": "Entre dans la magie !",
+      "alt": "Sparkle Kingdom World",
+      "default_status": "unlocked",
+      "required_level": 2,
+      "gems": 2,
+      "order": 2,
+      "color": "#ff85b3",
+      "secondary_color": "#ffb3c6",
+      "background_gradient": "radial-gradient(ellipse at top, #ffd9e6, #ffb3c6, #ff8cb3)",
+      "star_color": "#ffe6f0"
+    }
+  },
+  {
+    "model": "games.world",
+    "pk": 3,
+    "fields": {
+      "name": "Dino Discovery",
+      "description": "Pars à l'aventure !",
+      "alt": "Dino Discovery World",
+      "default_status": "unlocked",
+      "required_level": 3,
+      "gems": 1,
+      "order": 3,
+      "color": "#96ceb4",
+      "secondary_color": "#a8e6cf",
+      "background_gradient": "radial-gradient(ellipse at top, #1a3b1a, #2d5a2d, #3f7a3f)",
+      "star_color": "#ccffcc"
+    }
+  },
+  {
+    "model": "games.world",
+    "pk": 4,
+    "fields": {
+      "name": "Superhero City",
+      "description": "Sauve la ville !",
+      "alt": "Superhero City World",
+      "default_status": "unlocked",
+      "required_level": 4,
+      "gems": 2,
+      "order": 4,
+      "color": "#ff6b6b",
+      "secondary_color": "#ff8e53",
+      "background_gradient": "radial-gradient(ellipse at top, #4a0404, #8b0000, #330000)",
+      "star_color": "#ffcccc"
+    }
+  },
+  {
+    "model": "games.world",
+    "pk": 5,
+    "fields": {
+      "name": "Robo-Bot Rally",
+      "description": "Prépare ton robot !",
+      "alt": "Robo Bot Rally World",
+      "default_status": "locked",
+      "required_level": 5,
+      "gems": 0,
+      "order": 5,
+      "color": "#ffb347",
+      "secondary_color": "#ff8c42",
+      "background_gradient": "radial-gradient(ellipse at top, #332100, #664200, #996300)",
+      "star_color": "#ffe6b3"
+    }
+  },
+  {
+    "model": "games.world",
+    "pk": 6,
+    "fields": {
+      "name": "Mermaid Lagoon",
+      "description": "Nage avec les sirènes !",
+      "alt": "Mermaid Lagoon World",
+      "default_status": "locked",
+      "required_level": 6,
+      "gems": 3,
+      "order": 6,
+      "color": "#4ecdc4",
+      "secondary_color": "#45b7d1",
+      "background_gradient": "radial-gradient(ellipse at top, #023e4a, #036b7a, #049fb0)",
+      "star_color": "#b3ffff"
+    }
+  },
+  {
+    "model": "games.world",
+    "pk": 7,
+    "fields": {
+      "name": "Music World",
+      "description": "Crée ta musique !",
+      "alt": "Music World",
+      "default_status": "locked",
+      "required_level": 7,
+      "gems": 0,
+      "order": 7,
+      "color": "#ff9f1c",
+      "secondary_color": "#ffbf69",
+      "background_gradient": "radial-gradient(ellipse at top, #4d2e00, #804d00, #b36b00)",
+      "star_color": "#ffe6b3"
+    }
+  },
+  {
+    "model": "games.world",
+    "pk": 8,
+    "fields": {
+      "name": "Space Explorers",
+      "description": "Explore les galaxies !",
+      "alt": "Space Explorers World",
+      "default_status": "locked",
+      "required_level": 8,
+      "gems": 0,
+      "order": 8,
+      "color": "#3a5f8b",
+      "secondary_color": "#6c9bd2",
+      "background_gradient": "radial-gradient(ellipse at top, #0a1f2a, #143b4a, #1e576a)",
+      "star_color": "#b3e0ff"
+    }
+  }
+]

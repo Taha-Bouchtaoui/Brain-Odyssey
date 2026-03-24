@@ -1,0 +1,225 @@
+
+.level-diamond-container {
+  min-height: 100vh;
+  background: radial-gradient(ellipse at top, #0a0a2a, #030314);
+  color: white;
+  font-family: 'Fredoka One', 'Nunito', sans-serif;
+  padding: 30px;
+  position: relative;
+}
+
+.back-button {
+  background: linear-gradient(135deg, #ffd700, #ffb347);
+  color: #000;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  border: 4px solid white;
+  box-shadow: 0 8px 0 #b45f06;
+  margin-bottom: 30px;
+  transition: all 0.3s;
+}
+
+.back-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 0 #b45f06;
+}
+
+.back-button:active {
+  transform: translateY(5px);
+  box-shadow: 0 4px 0 #b45f06;
+}
+
+.world-header {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px 40px;
+  border-radius: 80px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.world-thumbnail {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 4px solid gold;
+  object-fit: cover;
+}
+
+.world-title {
+  font-size: 3rem;
+  color: white;
+  text-shadow: 3px 3px 0 #ff6b6b;
+  margin: 0;
+}
+
+.levels-title {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 50px;
+  color: #ffd700;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.levels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 40px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.level-diamond {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.4s;
+  animation: float 3s ease-in-out infinite;
+}
+
+.level-diamond:nth-child(odd) {
+  animation-delay: 0.2s;
+}
+
+.level-diamond:nth-child(even) {
+  animation-delay: 0.4s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.level-diamond:hover {
+  transform: scale(1.1);
+}
+
+.diamond-shape {
+  width: 150px;
+  height: 150px;
+  background: linear-gradient(135deg, #808080, #606060);
+  transform: rotate(45deg);
+  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 5px solid white;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+  margin-bottom: 15px;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.level-diamond.available .diamond-shape {
+  background: linear-gradient(135deg, #4ecdc4, #45b7d1);
+  box-shadow: 0 0 30px #4ecdc4, 0 10px 20px rgba(0,0,0,0.5);
+}
+
+.level-diamond.available:hover .diamond-shape {
+  box-shadow: 0 0 50px #4ecdc4, 0 15px 25px rgba(0,0,0,0.6);
+}
+
+.level-number {
+  transform: rotate(-45deg);
+  font-size: 3rem;
+  font-weight: 900;
+  color: white;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.play-icon, .lock-icon {
+  transform: rotate(-45deg);
+  font-size: 2rem;
+  margin-top: 5px;
+}
+
+.play-icon {
+  color: #4ecdc4;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: rotate(-45deg) scale(1); }
+  50% { transform: rotate(-45deg) scale(1.2); }
+}
+
+.level-name {
+  color: white;
+  font-size: 1.2rem;
+  text-shadow: 1px 1px 0 #000;
+  background: rgba(0,0,0,0.5);
+  padding: 5px 15px;
+  border-radius: 30px;
+  border: 2px solid white;
+  text-align: center;
+}
+
+.level-diamond.locked {
+  opacity: 0.7;
+  filter: grayscale(0.5);
+  cursor: not-allowed;
+}
+
+.level-diamond.locked .lock-icon {
+  color: #ff6b6b;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .world-header {
+    flex-direction: column;
+    text-align: center;
+    padding: 15px;
+  }
+  
+  .world-title {
+    font-size: 2rem;
+  }
+  
+  .levels-title {
+    font-size: 2rem;
+  }
+  
+  .diamond-shape {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .level-number {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .level-diamond-container {
+    padding: 15px;
+  }
+  
+  .world-thumbnail {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .diamond-shape {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .level-number {
+    font-size: 2rem;
+  }
+  
+  .level-name {
+    font-size: 1rem;
+  }
+}
