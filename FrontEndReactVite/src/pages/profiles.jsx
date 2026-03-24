@@ -3,20 +3,32 @@ import styles from "./Profiles.module.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+// 🔥 Chargement dynamique des avatars
+const avatarImages = import.meta.glob("../assets/avatars/*.png", { eager: true });
+const getAvatarSrc = (avatarName) => avatarImages[`../assets/avatars/${avatarName}`]?.default;
+
 function Profiles() {
   const [profiles, setProfiles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-
   useEffect(() => {
-    axios.get("http://127.0.0.1:8000/api/children/", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("access")}`
-      }
-      
-    })
-    .then(response => setProfiles(response.data))
-    .catch(error => console.error("Erreur chargement profils :", error));
+    axios
+      .get("http://127.0.0.1:8000/api/children/", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access")}`,
+        },
+      })
+      .then((response) => {
+        setProfiles(response.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Erreur chargement profils :", err);
+        setError("Impossible de charger les profils. Veuillez réessayer.");
+        setLoading(false);
+      });
   }, []);
 
   const selectProfile = (name) => {
@@ -29,12 +41,13 @@ function Profiles() {
     }, 500);
   };
 
+  if (loading) return <p style={{ textAlign: "center", marginTop: "50px" }}>Chargement des profils...</p>;
+  if (error) return <p style={{ textAlign: "center", color: "red", marginTop: "50px" }}>{error}</p>;
+
   return (
     <div className={styles.profilesPage}>
       <div className={styles.container}>
-        <h1 className={styles.title}>
-          Choisis ton Guerrier Mathématique
-        </h1>
+        <h1 className={styles.title}>Choisis ton Guerrier Mathématique</h1>
 
         <div className={styles.profiles}>
           {profiles.map((profile) => (
@@ -44,10 +57,13 @@ function Profiles() {
               onClick={() => selectProfile(profile.name)}
             >
               <img
-                src={`http://localhost:5173/assets/avatars/${profile.avatar}`}
+                src={getAvatarSrc(profile.avatar)}
                 alt={profile.name}
+                className={styles.avatarImage}
               />
-              <div className={styles.profileName}>{profile.name}</div>
+              <div className={styles.profileName}>
+                {profile.name} 
+              </div>
             </div>
           ))}
         </div>

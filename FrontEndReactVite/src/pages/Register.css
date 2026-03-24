@@ -67,6 +67,7 @@
 }
 
 .child-card {
+  
   background: rgba(255, 255, 255, 0.07);
   padding: 12px;
   border-radius: 12px;
@@ -111,4 +112,11 @@
 .submit-btn:hover {
   transform: scale(1.05);
   box-shadow: 0 0 20px #ffcc00;
+}
+.avatar-selection {
+  display: flex;
+  flex-wrap: nowrap; /* pour un scroll horizontal */
+  overflow-x: auto;
+  max-width: 100%; /* limite la largeur */
+  padding: 5px;
 }
