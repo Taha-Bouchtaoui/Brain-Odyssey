@@ -27,6 +27,7 @@ class WorldProgress(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='world_progress')
     world_index = models.PositiveIntegerField()
     exercises_solved = models.PositiveIntegerField(default=0)
+    mistakes = models.PositiveIntegerField(default=0)
 
     class Meta:
         unique_together = ('profile', 'world_index')

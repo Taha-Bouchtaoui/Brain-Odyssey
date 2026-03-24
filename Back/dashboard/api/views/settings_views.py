@@ -3,7 +3,6 @@ from django.core.files.base import ContentFile
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from api.models import WorldProgress
 
 
 @api_view(["GET", "PUT"])
@@ -59,7 +58,11 @@ def reset_progress(request):
 def get_my_progress(request):
     profile = request.user.profile
     progress = profile.world_progress.all().order_by('world_index')
-    data = [{"world_index": p.world_index, "exercises_solved": p.exercises_solved} for p in progress]
+    data = [{
+        "world_index": p.world_index,
+        "exercises_solved": p.exercises_solved,
+        "mistakes": p.mistakes,
+    } for p in progress]
     return Response({"progress": data})
 
 

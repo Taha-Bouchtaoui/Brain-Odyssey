@@ -38,14 +38,16 @@ def update_child(request, child_id):
     except Profile.DoesNotExist:
         return Response({"error": "Child not found."}, status=404)
 
-    child_user = child_profile.user
-    new_username = request.data.get("username", child_user.username)
+    new_display_name = request.data.get("username", child_profile.display_name)
 
-    if new_username != child_user.username:
-        if User.objects.filter(username=new_username).exclude(id=child_user.id).exists():
-            return Response({"error": "Username already taken."}, status=400)
-        child_user.username = new_username
-        child_user.save()
+    if new_display_name != child_profile.display_name:
+        already_exists = Profile.objects.filter(
+            parent=request.user.profile,
+            display_name=new_display_name
+        ).exclude(user__id=child_id).exists()
+        if already_exists:
+            return Response({"error": f"You already have a child named '{new_display_name}'."}, status=400)
+        child_profile.display_name = new_display_name
 
     age = request.data.get("age")
     if age is not None:
@@ -62,7 +64,7 @@ def update_child(request, child_id):
 
     return Response({
         "message": "Child profile updated!",
-        "username": child_profile.user.username,
+        "username": child_profile.display_name,
         "age": child_profile.age,
         "avatar": request.build_absolute_uri(child_profile.avatar.url) if child_profile.avatar else None,
     })
@@ -104,7 +106,6 @@ def add_children(request):
         if not child_data.get('age'):
             return Response({"error": "Age is required."}, status=400)
 
-        # only block duplicate within same parent
         already_exists = Profile.objects.filter(
             parent=parent_profile,
             display_name=child_data['username']
@@ -112,7 +113,6 @@ def add_children(request):
         if already_exists:
             return Response({"error": f"You already have a child named '{child_data['username']}'."}, status=400)
 
-        # make internal username globally unique
         internal_username = f"{parent_profile.user.id}__{child_data['username']}__{uuid.uuid4().hex[:6]}"
         auto_password = uuid.uuid4().hex
 
@@ -131,6 +131,7 @@ def add_children(request):
 
     return Response({"message": f"{len(created)} child(ren) added!", "created": created})
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_child_progress(request, child_id):
@@ -146,5 +147,9 @@ def get_child_progress(request, child_id):
         return Response({"error": "Child not found."}, status=404)
 
     progress = child_profile.world_progress.all().order_by('world_index')
-    data = [{"world_index": p.world_index, "exercises_solved": p.exercises_solved} for p in progress]
-    return Response({"username": child_profile.user.username, "progress": data})
+    data = [{
+        "world_index": p.world_index,
+        "exercises_solved": p.exercises_solved,
+        "mistakes": p.mistakes,
+    } for p in progress]
+    return Response({"username": child_profile.display_name, "progress": data})

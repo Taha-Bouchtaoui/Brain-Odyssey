@@ -11,10 +11,10 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'role', 'parent')
+    list_display = ('display_name', 'user', 'role', 'parent')
     list_filter = ('role',)
 
 @admin.register(WorldProgress)
 class WorldProgressAdmin(admin.ModelAdmin):
-    list_display = ('profile', 'world_index', 'exercises_solved')
+    list_display = ('profile', 'world_index', 'exercises_solved', 'mistakes')
     list_filter = ('world_index',)
