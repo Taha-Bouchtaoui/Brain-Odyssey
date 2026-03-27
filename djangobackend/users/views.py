@@ -12,34 +12,187 @@ from django.core.mail import send_mail
 from django.contrib.auth import authenticate
 from django.utils import timezone
 from datetime import timedelta
+import random
 
-from .models import ChildProfile
+from .models import ChildProfile, EmailVerification
 from .serializers import RegisterSerializer, ChildProfileSerializer
 
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 
-# Register Parent
+
+# =========================
+# REGISTER
+# =========================
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
 
+    def perform_create(self, serializer):
+        user = serializer.save()
 
-# Child Profiles 
+        # 🔐 Générer code
+        code = str(random.randint(100000, 999999))
+
+        EmailVerification.objects.update_or_create(
+            user=user,
+            defaults={
+                "code": code,
+                "expires_at": timezone.now() + timedelta(minutes=5)
+            }
+        )
+
+        # 📧 Envoyer email
+        send_mail(
+            "Code de vérification",
+            f"Votre code est : {code}",
+            "no-reply@mathgame.com",
+            [user.email],
+            fail_silently=False,
+        )
+
+
+# =========================
+# CHILD PROFILE
+# =========================
 
 class ChildProfileViewSet(ModelViewSet):
     serializer_class = ChildProfileSerializer
     permission_classes = [IsAuthenticated]
 
-    # Retourne uniquement les enfants du parent connecté
     def get_queryset(self):
         return self.request.user.children.all()
 
-    # Lors de la création, associe automatiquement l’enfant au parent connecté
     def perform_create(self, serializer):
         serializer.save(parent=self.request.user)
 
 
+# =========================
+# VERIFY EMAIL (CODE)
+# =========================
+
+@api_view(['POST'])
+def verify_email(request):
+    email = request.data.get("email")
+    code = request.data.get("code")
+
+    try:
+        user = User.objects.get(email=email)
+        verification = user.email_verification
+    except:
+        return Response({"message": "Utilisateur non trouvé"}, status=404)
+
+    if verification.code != code:
+        return Response({"message": "Code incorrect"}, status=400)
+
+    if verification.expires_at < timezone.now():
+        return Response({"message": "Code expiré"}, status=400)
+
+    # 🔥 ACTIVER LE COMPTE
+    user.is_active = True
+    user.save()
+
+    # 🔥 Supprimer le code
+    verification.delete()
+
+    return Response({"message": "Email vérifié avec succès"})
+
+
+# =========================
+# RESEND CODE
+# =========================
+
+@api_view(['POST'])
+def resend_code(request):
+    email = request.data.get("email")
+
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response({"message": "Utilisateur non trouvé"}, status=404)
+
+    code = str(random.randint(100000, 999999))
+
+    EmailVerification.objects.update_or_create(
+        user=user,
+        defaults={
+            "code": code,
+            "expires_at": timezone.now() + timedelta(minutes=5)
+        }
+    )
+
+    send_mail(
+        "Code de vérification",
+        f"Votre code est : {code}",
+        "no-reply@mathgame.com",
+        [user.email],
+        fail_silently=False,
+    )
+
+    return Response({"message": "Code renvoyé"})
+
+
+# =========================
+# LOGIN
+# =========================
+
+LOGIN_ATTEMPTS = {}
+MAX_ATTEMPTS = 3
+BLOCK_TIME = timedelta(minutes=1)
+
+@api_view(['POST'])
+def login_view(request):
+    email = request.data.get("email")
+    password = request.data.get("password")
+    now = timezone.now()
+
+    attempts = LOGIN_ATTEMPTS.get(email, {
+        "count": 0,
+        "blocked_until": None
+    })
+
+    # 🔒 blocage temporaire
+    if attempts["blocked_until"] and now < attempts["blocked_until"]:
+        remaining = (attempts["blocked_until"] - now).seconds
+        return Response(
+            {"message": f"Trop de tentatives. Réessayez dans {remaining} secondes."},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    user = authenticate(username=email, password=password)
+
+    if user:
+        # 🔥 BLOQUER SI NON VERIFIE
+        if not user.is_active:
+            return Response(
+                {"message": "Veuillez vérifier votre email"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # reset attempts
+        LOGIN_ATTEMPTS[email] = {"count": 0, "blocked_until": None}
+
+        return Response({"message": "Connexion réussie"})
+
+    else:
+        attempts["count"] += 1
+
+        if attempts["count"] >= MAX_ATTEMPTS:
+            attempts["blocked_until"] = now + BLOCK_TIME
+            attempts["count"] = 0
+
+        LOGIN_ATTEMPTS[email] = attempts
+
+        return Response(
+            {"message": "Email ou mot de passe incorrect"},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+
+
+# =========================
 # FORGOT PASSWORD
+# =========================
 
 @api_view(['POST'])
 def forgot_password(request):
@@ -58,14 +211,17 @@ def forgot_password(request):
     send_mail(
         "Réinitialisation de mot de passe",
         f"Cliquez sur ce lien : {reset_link}",
-        None,
+        "no-reply@mathgame.com",
         [email],
+        fail_silently=False,
     )
 
     return Response({"message": "Lien envoyé avec succès"})
 
 
+# =========================
 # RESET PASSWORD
+# =========================
 
 @api_view(['POST'])
 def reset_password(request, uidb64, token):
@@ -83,45 +239,3 @@ def reset_password(request, uidb64, token):
     user.save()
 
     return Response({"message": "Mot de passe réinitialisé avec succès"})
-
-
-# LOGIN AVEC LIMITE DES TENTATIVES
-
-LOGIN_ATTEMPTS = {}  # {email: {"count": 0, "last_attempt": datetime, "blocked_until": datetime}}
-MAX_ATTEMPTS = 3
-BLOCK_TIME = timedelta(minutes=1)  # 1 minute de blocage
-
-@api_view(['POST'])
-def login_view(request):
-    email = request.data.get("email")
-    password = request.data.get("password")
-    now = timezone.now()
-    attempts = LOGIN_ATTEMPTS.get(email, {"count": 0, "last_attempt": now, "blocked_until": None})
-
-    # Vérifier si l'utilisateur est bloqué
-    if attempts["blocked_until"] and now < attempts["blocked_until"]:
-        remaining = (attempts["blocked_until"] - now).seconds
-        return Response(
-            {"message": f"Trop de tentatives. Réessayez dans {remaining} secondes."},
-            status=status.HTTP_403_FORBIDDEN
-        )
-
-    # Authentification
-    user = authenticate(username=email, password=password)
-    if user:
-        # Reset du compteur en cas de succès
-        LOGIN_ATTEMPTS[email] = {"count": 0, "last_attempt": now, "blocked_until": None}
-        # Ici tu peux retourner ton token ou info user
-        return Response({"message": "Connexion réussie"})
-    else:
-        # Échec → incrémente le compteur
-        attempts["count"] += 1
-        attempts["last_attempt"] = now
-
-        # Bloquer si dépasse MAX_ATTEMPTS
-        if attempts["count"] >= MAX_ATTEMPTS:
-            attempts["blocked_until"] = now + BLOCK_TIME
-            attempts["count"] = 0  # reset compteur après blocage
-
-        LOGIN_ATTEMPTS[email] = attempts
-        return Response({"message": "Email ou mot de passe incorrect"}, status=status.HTTP_401_UNAUTHORIZED)

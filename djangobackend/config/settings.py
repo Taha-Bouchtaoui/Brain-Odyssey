@@ -29,8 +29,16 @@ SECRET_KEY = 'django-insecure-=w-@if0cjtv@ju19xpjt!v8v$rww*o%hrd&yc9lh76g&5rv+ro
 DEBUG = True
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'no-reply@mathgame.com'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = 'taha.bouchtaoui@gmail.com'
+EMAIL_HOST_PASSWORD = 'rhfu mpxx ayox xztv'
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 ALLOWED_HOSTS = []
 

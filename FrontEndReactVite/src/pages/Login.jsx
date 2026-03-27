@@ -1,4 +1,3 @@
-// Login.jsx
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -9,14 +8,15 @@ function Login() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [messageColor, setMessageColor] = useState("");
-  const [attempts, setAttempts] = useState(0); // compte des tentatives
-  const [isBlocked, setIsBlocked] = useState(false); // bouton bloqué
-  const [timer, setTimer] = useState(60); // 60 secondes de blocage
+  const [attempts, setAttempts] = useState(0);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [timer, setTimer] = useState(60);
   const navigate = useNavigate();
 
-  // Gestion du compte à rebours si bloqué
+  // ⏱️ Timer blocage frontend
   useEffect(() => {
     let interval = null;
+
     if (isBlocked) {
       interval = setInterval(() => {
         setTimer((prev) => {
@@ -31,6 +31,7 @@ function Login() {
         });
       }, 1000);
     }
+
     return () => clearInterval(interval);
   }, [isBlocked]);
 
@@ -45,26 +46,42 @@ function Login() {
         password: password,
       });
 
+      // ✅ Stock tokens
       localStorage.setItem("access", response.data.access);
       localStorage.setItem("refresh", response.data.refresh);
 
       setMessage("Connexion réussie 🎉");
       setMessageColor("green");
 
-      // Redirection après 0.5s
       setTimeout(() => navigate("/profiles"), 500);
+
     } catch (err) {
       console.error(err.response?.data);
-      setMessage("Email ou mot de passe incorrect");
+
+      const backendMessage = err.response?.data?.message;
+
+      // 🔥 Message dynamique backend
+      if (backendMessage) {
+        setMessage(backendMessage);
+      } else {
+        setMessage("Erreur lors de la connexion");
+      }
+
       setMessageColor("red");
-      setAttempts((prev) => {
-        const newAttempts = prev + 1;
-        if (newAttempts >= 3) {
-          setIsBlocked(true);
-          setMessage("Trop de tentatives ! Réessayez dans 60 secondes.");
-        }
-        return newAttempts;
-      });
+
+      // ⚠️ Blocage uniquement si erreur classique
+      if (backendMessage === "Email ou mot de passe incorrect") {
+        setAttempts((prev) => {
+          const newAttempts = prev + 1;
+
+          if (newAttempts >= 3) {
+            setIsBlocked(true);
+            setMessage("Trop de tentatives ! Réessayez dans 60 secondes.");
+          }
+
+          return newAttempts;
+        });
+      }
     }
   };
 
@@ -95,7 +112,11 @@ function Login() {
           />
 
           {/* Message dynamique */}
-          {message && <p style={{ color: messageColor, marginTop: "10px" }}>{message}</p>}
+          {message && (
+            <p style={{ color: messageColor, marginTop: "10px" }}>
+              {message}
+            </p>
+          )}
 
           <button type="submit" disabled={isBlocked}>
             {isBlocked ? `Bloqué (${timer}s)` : "Se connecter"}
@@ -104,7 +125,9 @@ function Login() {
 
         <div className="auth-links" style={{ marginTop: "15px" }}>
           <Link to="/forgot-password">Mot de passe oublié ?</Link>
-          <Link to="/register" style={{ marginLeft: "10px" }}>Créer un compte</Link>
+          <Link to="/register" style={{ marginLeft: "10px" }}>
+            Créer un compte
+          </Link>
         </div>
       </div>
     </>

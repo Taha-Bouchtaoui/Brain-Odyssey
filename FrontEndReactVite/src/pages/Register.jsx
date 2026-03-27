@@ -3,7 +3,15 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Register.css";
 
-//  Chargement automatique des avatars
+
+const getStrengthColor = (strength) => {
+  if (strength === "Faible") return "red";
+  if (strength === "Moyen") return "orange";
+  if (strength === "Fort") return "green";
+  return "black";
+};
+
+// 🔥 Chargement avatars
 const avatarImages = import.meta.glob("../assets/avatars/*.png", { eager: true });
 
 const avatars = Object.keys(avatarImages)
@@ -35,7 +43,7 @@ export default function Register() {
   const [messageColor, setMessageColor] = useState("");
   const [passwordStrength, setPasswordStrength] = useState("");
 
-  // 💪 Force mot de passe
+  // 🔥 Force mot de passe
   const checkPasswordStrength = (password) => {
     let score = 0;
     if (password.length >= 8) score++;
@@ -84,83 +92,43 @@ export default function Register() {
       return;
     }
 
-    // 🔴 OBLIGATOIRE : au moins un enfant
+    // 🔴 Vérifier enfants
     if (children.length === 0) {
-      setMessage("⚠️ Vous devez créer au moins un profil d'enfant !");
+      setMessage("⚠️ Ajoutez au moins un enfant !");
       setMessageColor("red");
       return;
     }
 
-    // 🔴 Validation enfants
-    for (let child of children) {
-      if (!child.name.trim()) {
-        setMessage("Chaque enfant doit avoir un nom !");
-        setMessageColor("red");
-        return;
-      }
-      if (!child.avatar) {
-        setMessage("Chaque enfant doit choisir un avatar !");
-        setMessageColor("red");
-        return;
-      }
-      if (!child.age || child.age < 1 || child.age > 15) {
-        setMessage("L'âge doit être entre 1 et 15 ans !");
-        setMessageColor("red");
-        return;
-      }
-    }
-
     try {
-      setMessage("Création du compte en cours...");
+      setMessage("Création du compte...");
       setMessageColor("blue");
 
-      // 1️⃣ Parent
+      // 📌 REGISTER
+      if (children.length === 0) {
+  setMessage("Ajoutez au moins un enfant");
+  return;
+}
       await axios.post("http://127.0.0.1:8000/api/register/", {
-        username: formData.email,
+        
         email: formData.email,
         password: formData.password,
         phone_number: formData.phone_number,
+        children: children,
       });
 
-      // 2️⃣ Login auto
-      const loginResponse = await axios.post("http://127.0.0.1:8000/api/login/", {
-        username: formData.email,
-        password: formData.password,
-      });
-
-      const accessToken = loginResponse.data.access;
-
-      // 3️⃣ Enfants
-      await Promise.all(
-        children.map((child) =>
-          axios.post(
-            "http://127.0.0.1:8000/api/children/",
-            {
-              name: child.name,
-              avatar: child.avatar,
-              age: child.age,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            }
-          )
-        )
-      );
-
-      setMessage("✅ Compte et enfants créés avec succès !");
+      setMessage("📧 Code envoyé à votre email !");
       setMessageColor("green");
 
-      setTimeout(() => navigate("/"), 1000);
+      // 🚀 Redirection vers vérification
+      setTimeout(() => {
+        navigate("/verify-email", {
+          state: { email: formData.email },
+        });
+      }, 1500);
 
     } catch (err) {
       console.error(err.response?.data || err.message);
-      setMessage(
-        err.response?.data?.detail ||
-        err.message ||
-        "Erreur lors de la création du compte"
-      );
+      setMessage("Erreur lors de l'inscription");
       setMessageColor("red");
     }
   };
@@ -168,18 +136,11 @@ export default function Register() {
   return (
     <div className="register-container">
       <div className="register-card">
-        <h2 className="register-title">Créer un compte</h2>
+        <h2>Créer un compte</h2>
 
         <p style={{ color: messageColor }}>{message}</p>
 
-        {/* 🔴 Message si aucun enfant */}
-        {children.length === 0 && (
-          <p style={{ color: "red" }}>
-            ⚠️ Vous devez ajouter au moins un enfant
-          </p>
-        )}
-
-        <form onSubmit={handleSubmit} className="register-form">
+        <form onSubmit={handleSubmit}>
           <input
             type="email"
             name="email"
@@ -194,22 +155,10 @@ export default function Register() {
             placeholder="Mot de passe"
             onChange={handleChange}
             required
-            pattern="^(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}$"
-            title="Au moins 8 caractères, 1 chiffre et 1 caractère spécial"
           />
 
           {formData.password && (
-            <p
-              style={{
-                color:
-                  passwordStrength === "Faible"
-                    ? "red"
-                    : passwordStrength === "Moyen"
-                    ? "orange"
-                    : "green",
-                fontWeight: "bold",
-              }}
-            >
+            <p style={{ color: getStrengthColor(passwordStrength) }}>
               Force : {passwordStrength}
             </p>
           )}
@@ -229,14 +178,13 @@ export default function Register() {
             onChange={handleChange}
           />
 
-          <h3>Profils des enfants</h3>
+          <h3>Enfants</h3>
 
           {children.map((child, index) => (
-            <div key={index} className="child-card">
-
+            <div key={index}>
               <input
                 type="text"
-                placeholder="Nom de l'enfant"
+                placeholder="Nom"
                 value={child.name}
                 onChange={(e) =>
                   handleChildChange(index, "name", e.target.value)
@@ -246,69 +194,46 @@ export default function Register() {
               <input
                 type="number"
                 placeholder="Âge"
-                value={child.age || ""}
-                min="1"
-                max="15"
+                value={child.age}
                 onChange={(e) =>
-                  handleChildChange(index, "age", parseInt(e.target.value))
-                }
-                onInvalid={(e) =>
-                  e.target.setCustomValidity("Âge entre 1 et 15 ans")
+                  handleChildChange(index, "age", e.target.value)
                 }
               />
 
-              <p>Choisir un avatar :</p>
-
-              <div className="avatar-selection">
-                {avatars.map((av, i) => (
+              <div>
+                {avatars.map((av) => (
                   <img
-                    key={i}
+                    key={av.name}
                     src={av.src}
                     alt={av.name}
-                    className={
-                      child.avatar === av.name ? "avatar selected" : "avatar"
-                    }
+                    width="50"
+                    style={{
+                      opacity: isAvatarTaken(av.name) ? 0.4 : 1,
+                      cursor: "pointer",
+                      border:
+                        child.avatar === av.name
+                          ? "2px solid green"
+                          : "none",
+                    }}
                     onClick={() =>
                       !isAvatarTaken(av.name) &&
                       handleChildChange(index, "avatar", av.name)
                     }
-                    style={{
-                      width: "70px",
-                      margin: "5px",
-                      cursor: isAvatarTaken(av.name)
-                        ? "not-allowed"
-                        : "pointer",
-                      border:
-                        child.avatar === av.name
-                          ? "3px solid #4CAF50"
-                          : "2px solid transparent",
-                      borderRadius: "10px",
-                      opacity: isAvatarTaken(av.name) ? 0.4 : 1,
-                    }}
                   />
                 ))}
               </div>
 
-              <button
-                type="button"
-                onClick={() => removeChild(index)}
-                className="remove-btn"
-              >
+              <button type="button" onClick={() => removeChild(index)}>
                 Supprimer
               </button>
             </div>
           ))}
 
-          <button type="button" onClick={addChild} className="add-btn">
-            Ajouter un enfant
+          <button type="button" onClick={addChild}>
+            Ajouter enfant
           </button>
 
-          {/* 🔴 Désactivé si aucun enfant */}
-          <button
-            type="submit"
-            className="submit-btn"
-            disabled={children.length === 0}
-          >
+          <button type="submit">
             S'inscrire
           </button>
         </form>

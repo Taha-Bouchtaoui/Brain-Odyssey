@@ -5,6 +5,8 @@ from .views import (
     ChildProfileViewSet,
     forgot_password,
     reset_password,
+    verify_email,
+    resend_code,
 )
 
 router = DefaultRouter()
@@ -20,4 +22,7 @@ urlpatterns = [
 
     # Child Profiles (router)
     path('', include(router.urls)),
+
+    path('verify-email/', verify_email),
+    path('resend-code/', resend_code),
 ]
